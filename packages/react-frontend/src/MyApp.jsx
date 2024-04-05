@@ -29,7 +29,11 @@ const characters = [
           return i !== index;
         });
         setCharacters(updated);
-      }
+    }
+
+    function updateList(person) {
+        setCharacters([...characters, person]);
+    }
   
       return (
         <div className="container">
@@ -37,7 +41,7 @@ const characters = [
             characterData={characters}
             removeCharacter={removeOneCharacter}
           />
-          <Form />
+          <Form handleSubmit={updateList} />
         </div>
       );
   }
