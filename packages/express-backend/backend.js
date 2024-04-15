@@ -51,6 +51,31 @@ const findUserById = (id) =>
         res.send(result);
     }
 });
+
+const deleteUserById = (id) => 
+    users["users_list"].filter((user) => user["id"] !== id);
+
+    app.delete("/users/:id", (req, res) => {
+    const id = req.params["id"];
+    const newUsers = deleteUserById(id);
+    if (newUsers.length === users["users_list"].length) {
+        res.status(404).send("Resource not found.");
+    } else {
+        users["users_list"] = newUsers;
+        res.send(users);
+    }
+});
+
+const addUser = (user) => {
+    users["users_list"].push(user);
+    return user;
+};
+  
+app.post("/users", (req, res) => {
+    const userToAdd = req.body;
+    addUser(userToAdd);
+    res.send();
+});
   
 app.get("/users", (req, res) => {
     const name = req.query.name;
