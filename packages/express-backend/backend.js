@@ -2,6 +2,7 @@ import express from "express";
 
 const app = express();
 const port = 8000;
+app.use(express.json());
 
 const users = {
     users_list: [
@@ -39,7 +40,7 @@ const findUserByName = (name) => {
     );
 };
 
-const findUserByNameAndJob = (name) => {
+const findUserByNameAndJob = (name, job) => {
     return users["users_list"].filter(
       (user) => user["name"] === name && user["job"] === job
     );
@@ -76,19 +77,25 @@ const addUser = (user) => {
     users["users_list"].push(user);
     return user;
 };
-  
+
 app.post("/users", (req, res) => {
     const userToAdd = req.body;
+    console.log(req);
     addUser(userToAdd);
     res.send();
 });
   
 app.get("/users", (req, res) => {
     const name = req.query.name;
-    if (name != undefined) {
-      let result = findUserByName(name);
+    const job = req.query.job;
+    if (name != undefined && job != undefined) {
+      let result = findUserByNameAndJob(name, job);
       result = { users_list: result };
       res.send(result);
+    } else if (name != undefined) {
+        let result = findUserByName(name);
+        result = { users_list: result };
+        res.send(result);
     } else {
       res.send(users);
     }
@@ -97,8 +104,6 @@ app.get("/users", (req, res) => {
 app.get("/users", (req, res) => {
     res.send(users);
 });
-
-app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World! I'm Riley.");
