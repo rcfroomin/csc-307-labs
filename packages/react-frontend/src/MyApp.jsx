@@ -25,10 +25,25 @@ const characters = [
     const [characters, setCharacters] = useState([]);
 
     function removeOneCharacter(index) {
-        const updated = characters.filter((character, i) => {
-          return i !== index;
-        });
-        setCharacters(updated);
+        const characterId = characters[index].id;
+        const url = `http://localhost:8000/users/${characterId}`;
+        
+        fetch(url, {
+            method: 'DELETE'
+        })
+            .then((res) => {
+                if (res.status === 204) {
+                    const updated = characters.filter((character, i) => i !== index);
+                    setCharacters(updated);
+                } else if (res.status === 404) {
+                    throw new Error('Resource not found');
+                } else {
+                    throw new Error('Failed to delete');
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     function fetchUsers() {
@@ -55,12 +70,17 @@ const characters = [
             .catch((error) => { console.log(error); });
       }, [] );
 
-      function updateList(person) { 
+    function updateList(person) { 
         postUser(person)
-          .then(() => setCharacters([...characters, person]))
-          .catch((error) => {
+        .then((res) => {
+            if (res.status != 201)
+                throw new Error("Failed to add.");
+            return res.json();
+        })
+        .then((json) => setCharacters([...characters, json])) 
+        .catch((error) => { 
             console.log(error);
-          })
+        });
     }
   
       return (

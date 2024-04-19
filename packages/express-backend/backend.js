@@ -71,20 +71,32 @@ const deleteUserById = (id) =>
         res.status(404).send("Resource not found.");
     } else {
         users["users_list"] = newUsers;
-        res.send(users);
+        res.status(204).send(users);
     }
 });
 
+const makeId = (user) => { // is it ok that the id is at the end, not the beginning like the ogs?
+    if (user.id === undefined) {
+        user.id = Math.random().toString(36).substring(2, 8);
+    }
+    return user;
+};
+
 const addUser = (user) => {
+    user = makeId(user);
     users["users_list"].push(user);
     return user;
 };
 
 app.post("/users", (req, res) => {
     const userToAdd = req.body;
-    console.log(req);
-    addUser(userToAdd);
-    res.send();
+    //console.log(req);
+    const user_ret = addUser(userToAdd);
+    if (user_ret === undefined) {
+      res.status(500).send("Internal Server Error. User: " + user_ret);
+    } else {
+        res.status(201).send(user_ret);
+    }
 });
   
 app.get("/users", (req, res) => {
