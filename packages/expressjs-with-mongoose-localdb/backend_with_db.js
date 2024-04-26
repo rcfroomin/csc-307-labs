@@ -5,7 +5,7 @@ import userService from "./services/user-service.js";
 
 const app = express();
 const port = 8000;
-// test comment
+
 app.use(cors());
 app.use(express.json());
 
