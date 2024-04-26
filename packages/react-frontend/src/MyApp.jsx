@@ -25,9 +25,8 @@ const characters = [
     const [characters, setCharacters] = useState([]);
 
     function removeOneCharacter(index) {
-        const characterId = characters[index].id;
+        const characterId = characters[index]._id;
         const url = `http://localhost:8000/users/${characterId}`;
-        
         fetch(url, {
             method: 'DELETE'
         })
