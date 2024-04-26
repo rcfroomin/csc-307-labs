@@ -16,6 +16,43 @@ app.get("/", (req, res) => {
 app.get("/users", (req, res) => {
   const name = req.query["name"];
   const job = req.query["job"];
+
+  if (name === undefined && job === undefined) {
+    userService
+      .getUsers()
+      .then((result) => {
+        res.send({ users_list: result });
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).send("An error ocurred in the server.");
+      });
+    return;
+  }
+  if (name && job === undefined) {
+    userService
+      .findUserByName(name)
+      .then((result) => {
+        res.send({ users_list: result });
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).send("An error ocurred in the server.");
+      });
+    return;
+  }
+  if (job && name === undefined) {
+    userService
+      .findUserByJob(job)
+      .then((result) => {
+        res.send({ users_list: result });
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).send("An error ocurred in the server.");
+      });
+    return;
+  }
   userService
     .findUserByNameAndJob(name, job)
     .then((result) => {
